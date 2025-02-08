@@ -26,30 +26,70 @@ type BankAccount = {
   transactions: Transaction[]
 }
 
-const accounts: BankAccount[] = [];
+let accounts: BankAccount[] = [];
 
-function createAccount(accountNo, firstname, lastname, initialDeposit, isActive = true) {
+function createAccount(accountNo: number, firstname: string, lastname: string, initialDeposit: number, isActive: boolean = true): BankAccount {
+  const newAccount = {
+    accountNo: accountNo,
+    firstname: firstname,
+    lastname: lastname,
+    balance: initialDeposit,
+    isActive: isActive,
+    transactions: []
+  }
 
+  accounts.push(newAccount);
+  return newAccount;
 }
 
-function processTransaction(accountNo, amount, transactionType) {
+function processTransaction(accountNo: number, amount: number, transactionType: number): string {
+  const account = accounts.find(account => account.accountNo === accountNo);
 
+  if (transactionType === TransactionType.Deposit) {
+    account.balance += amount;
+    account.transactions.push({
+      accountNo: accountNo,
+      amount: amount,
+      type: TransactionType.Deposit
+    });
+    return `${amount} deposited into account number ${accountNo}`;
+  }
+
+  if (transactionType === TransactionType.Withdraw) {
+    if (account.balance >= amount) {
+      account.balance -= amount;
+      account.transactions.push({
+        accountNo: accountNo,
+        amount: amount,
+        type: TransactionType.Withdraw
+      });
+      return `${amount} withdrawn from account number ${accountNo}`;
+    } else {
+      return 'Insufficient funds for withdrawal'
+    }
+  }
 }
 
-function getBalance(accountNo) {
-
+function getBalance(accountNo: number): number {
+  const account = accounts.find(account => account.accountNo === accountNo);
+  return account.balance;
 }
 
-function getTransactionHistory(accountNo) {
-
+function getTransactionHistory(accountNo: number): Transaction[] {
+  const account = accounts.find(account => account.accountNo === accountNo);
+  const accountHistory = account.transactions;
+  return accountHistory;
 }
 
-function checkActiveStatus(accountNo) {
-
+function checkActiveStatus(accountNo: number): boolean {
+  const account = accounts.find(account => account.accountNo === accountNo);
+  const isActive = account.isActive;
+  return isActive;
 }
 
-function closeAccount(accountNo) {
-
+function closeAccount(accountNo: number): string {
+  accounts = accounts.filter(account => account.accountNo !== accountNo);
+  return `Account number ${accountNo} closed`;
 }
 
 // Test cases (students should add more)

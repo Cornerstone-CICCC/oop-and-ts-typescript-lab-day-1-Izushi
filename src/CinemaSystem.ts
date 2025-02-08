@@ -9,26 +9,51 @@
 enum MovieGenre {
   Action,
   // add 4 more
+  Horror,
+  Comedy,
+  Kids,
+  Drama
 }
 
-type Seat = [string, number]
+type Seat = [string, number];
 
 type Movie = {
-
+  movieId: number;
+  title: string;
+  genre: MovieGenre;
+  availableSeats: Seat[];
 }
 
-const movies: Movie[] = [];
+let movies: Movie[] = [];
 
-function addMovie(movieId, title, genre, availableSeats) {
+function addMovie(movieId: number, title: string, genre: MovieGenre, availableSeats: Seat[]): Movie[] {
+  const newMovie = {
+    movieId: movieId,
+    title: title,
+    genre: genre,
+    availableSeats: availableSeats
+  };
 
+  movies.push(newMovie);
+  return movies;
 }
 
-function bookSeat(movieId, rowLetter, seatNumber) {
-
+function bookSeat(movieId: number, rowLetter: string, seatNumber: number): string {
+  const selectedMovie = movies.find(movie => movie.movieId === movieId);
+  const seat = selectedMovie.availableSeats.find((availableSeat: Seat) => availableSeat[0] === rowLetter && availableSeat[1] === seatNumber);
+  if (seat) {
+    selectedMovie.availableSeats = selectedMovie.availableSeats.filter((availableSeat: Seat) => availableSeat !== seat);
+    console.log(selectedMovie.availableSeats)
+    return `Seat ${rowLetter + seatNumber} booked successfully`;
+  } else {
+    return `Seat ${rowLetter + seatNumber} is not available`
+  }
 }
 
-function checkSeatAvailability(movieId, rowLetter, seatNumber) {
-
+function checkSeatAvailability(movieId: number, rowLetter: string, seatNumber: number): boolean {
+  const selectedMovie = movies.find(movie => movie.movieId === movieId);
+  const seat = selectedMovie.availableSeats.find((availableSeat: Seat) => availableSeat[0] === rowLetter && availableSeat[1] === seatNumber);
+  return seat ? true : false;
 }
 
 // Test cases (Create more if needed)
